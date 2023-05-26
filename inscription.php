@@ -2,60 +2,59 @@
 
     session_start();
 
-    $bdd = new PDO("mysql:host=localhost;dbname=moduleconnexion;charset=utf8", "root", "");
+    $bdd = new PDO("mysql:host=localhost;dbname=moduleconnexion;charset=utf8", "root", "SuperP3scado");
     $message = "";
 
     function testPassword($pass){
 
+        $conditions = [ ["Doit contenir au moins une lettre majuscule.", '/[A-Z]/'],
+                        ["Doit contenir au moins une lettre minuscule.", '/[a-z]/'],
+                        ["Doit contenir au moins un chiffre.", '/\d/'],
+                        ["Doit contenir au moins un caractère spécial.", "/[\'^£$%&*()}{@#~?><>,|=_+¬-]/"]];
+
         $errors = [];
 
         if(strlen($pass) < 8){
-            array_push($errors, "Doit avoir au moins 8 charactère");
-        }if (!preg_match('/[A-Z]/', $pass)){
-            array_push($errors, "Doit contenir au moins 1 majuscule");
-        }if (!preg_match('/[a-z]/', $pass)){
-            array_push($errors, "Doit contenir au moins 1 minuscule");
-        }if (!preg_match('~[0-9]~', $pass)){
-            array_push($errors, "Doit contenir au moins 1 numéro");
-        }if (preg_match("/[\'^£$%&*()}{@#~?><>,|=_+¬-]/", $pass)){
-            array_push($errors, "Doit contenir au moins 1 charactère spécial");
+            array_push( $errors, "Doit avoir au moins 8 charactère" );
+        }
+        foreach( $conditions as $condition ){
+            if( !preg_match( $condition[1], $pass )){
+                array_push( $errors, $condition[0] );
+            }
         }
         return $errors;
     }
 
     if (isset($_POST["submit"])){
 
-        $passtest = testPassword($_POST["password"]);
+        $username = $_POST["login"];
+        $firstname = $_POST["firstname"];
+        $nom = $_POST["nom"];
+        $password = $_POST["password"];
+
+        $passtest = testPassword( $password );
         
-        if(empty($_POST["login"])){
-            $message = "Entrer login";
+        if( empty($username) || empty($firstname) || empty($lastname) ){
+            $message = "Entrer login, nom et prénom";
         }
-        elseif(empty($_POST["prenom"])){
-            $message = "Entrer prenom";
-        }
-        elseif(empty($_POST["prenom"])){
-            $message = "Entrer nom";
-        }
-        elseif(empty($_POST["password"]) || count($passtest) > 0){
+        elseif( empty($_POST["password"]) || count($passtest) > 0 ){
             $message = "Mot de passe invalide.";
+        }
+        elseif( $_POST["password"] != $_POST["confirm-pass"] ){
+            $message = "Veuillez confirmer le mot de passe.";
         }
         else {
 
-            $username = $_POST["login"];
-            $prenom = $_POST["prenom"];
-            $nom = $_POST["nom"];
-            $password = $_POST["password"];
-
-            $req = $bdd->prepare("SELECT * FROM utilisateurs WHERE login = ?");
-            $req->execute([$username]);
+            $req = $bdd->prepare( "SELECT * FROM user WHERE login = ?" );
+            $req->execute( [$username] );
             $user = $req->fetch();
 
             if($user) {
                 $message = "L'utilisateur existe déja";
             } else {
-                $sql = "INSERT INTO utilisateurs (login, prenom, nom, password) VALUES (?,?,?,?)";
+                $sql = "INSERT INTO user (login, firstname, lastname, password) VALUES (?,?,?,?)";
                 $req = $bdd->prepare($sql);
-                $req->execute([$username, $prenom, $nom, hash("sha256", $password)]);
+                $req->execute( [$username, $firstname, $nom, hash("sha256", $password)] );
                 header("location: connexion.php");
             }
         }
@@ -74,43 +73,52 @@
 <body>
     <header>
         <nav>
-            <menu>
+            <div>
                 <a href="index.php">Accueil</a>
-                
-                <?php if(empty($_SESSION)) : ?>
-
+            </div>
+            <div>
+                <?php if( empty($_SESSION) ) : ?>
                     <a href="connexion.php">Connexion</a>
                     <a href="inscription.php">Inscription</a>
-                    
+                
                 <?php else : ?>
-                    
-                    <?php if($_SESSION["id"] == 1) : ?>
+                
+                    <?php if( $_SESSION["id"] == 1 ) : ?>
                         <a href="admin.php">Admin</a>
                     <?php endif ?>
-                    
+                
                     <a href="profil.php">Profil</a>
                     <a href="deconnexion.php">Déconnexion</a>
                 <?php endif ?>
-            </menu>
+            </div>
         </nav>
     </header>
     <main>
-        <?php 
-            if(!empty($message)){
-                echo $message . "</br>";;
-                foreach($passtest as $error){
-                    echo $error . "</br>";
-                }
-            }
-        ?>
-        <form action="" method="POST">
-            <input type="text" name="login" placeholder="login" required>
-            <input type="text" name="prenom" placeholder="prenom" required>
-            <input type="text" name="nom" placeholder="nom" required>
-            <input type="password" name="password" placeholder="password" required>
-            <input type="submit" name="submit" value="Inscription">
-        </form>
+        <div class="form-container">
+            <form action="" method="POST">
+                <h2>Creation de compte</h2>
+                <?php 
+                    if( !empty($message) ){
+                        echo $message . "</br>";;
+                        foreach( $passtest as $error ){
+                            echo $error . "</br>";
+                        }
+                    }
+                ?>
+                <input type="text" name="login" placeholder="Login" required>
+                <input type="text" name="firstname" placeholder="firstname" required>
+                <input type="text" name="nom" placeholder="Nom" required>
+                <input type="password" name="password" placeholder="Mot de passe" required>
+                <input type="password" name="confirm-pass" placeholder="Confirmer mot de passe" required>
+                <input type="submit" name="submit" value="Inscription">
+            </form>
+        </div>
     </main>
-    <footer></footer>
+    <footer>
+        <span>Laguerre Jean-Bernard</span>
+        <a href="https://github.com/jean-bernard-laguerre/module-connexion">
+            <img src="./style/images/Github.png" alt="logo github" />
+        </a>   
+    </footer>
 </body>
 </html>

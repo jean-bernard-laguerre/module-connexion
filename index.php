@@ -8,38 +8,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style/style.css">
     <title>Module de connexion - Accueil</title>
 </head>
 <body>
     <header>
         <nav>
-            <menu>
+            <div>
                 <a href="index.php">Accueil</a>
-                
+            </div>
+            <div>
                 <?php if(empty($_SESSION)) : ?>
-
                     <a href="connexion.php">Connexion</a>
                     <a href="inscription.php">Inscription</a>
-                    
+                
                 <?php else : ?>
-                    
+                
                     <?php if($_SESSION["id"] == 1) : ?>
                         <a href="admin.php">Admin</a>
                     <?php endif ?>
-                    
+                
                     <a href="profil.php">Profil</a>
                     <a href="deconnexion.php">Déconnexion</a>
                 <?php endif ?>
-            </menu>
+            </div>
         </nav>
     </header>
     <main>
         <?php
             if(!empty($_SESSION)){
-                echo "Bonjour " . $_SESSION["prenom"];
+                echo "Bonjour " . $_SESSION["firstname"] . ".";
             }
         ?>
     </main>
-    <footer></footer>
+    <footer>
+        <span>Laguerre Jean-Bernard</span>
+        <a href="https://github.com/jean-bernard-laguerre/module-connexion">
+            <img src="./style/images/Github.png" alt="logo github" />
+        </a>   
+    </footer>
 </body>
 </html>
