@@ -35,11 +35,14 @@
         </nav>
     </header>
     <main>
-        <?php
-            if(!empty($_SESSION)){
-                echo "Bonjour " . $_SESSION["firstname"] . ".";
-            }
-        ?>
+
+        <?php if(!empty($_SESSION)) : ?>
+            <div class="container">
+                <h2>
+                    <?php {echo "Bienvenue " . $_SESSION["firstname"] . ".";}?>
+                </h2>
+            </div>
+        <?php endif ?>
     </main>
     <footer>
         <span>Laguerre Jean-Bernard</span>

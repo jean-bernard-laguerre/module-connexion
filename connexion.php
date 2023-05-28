@@ -2,7 +2,7 @@
 
     session_start();
 
-    $bdd = new PDO("mysql:host=localhost;dbname=moduleconnexion;charset=utf8", "root", "SuperP3scado");
+    $bdd = new PDO("mysql:host=localhost;dbname=moduleconnexion;charset=utf8", "root", "");
     $message = "";
 
     if (isset($_POST["submit"])){

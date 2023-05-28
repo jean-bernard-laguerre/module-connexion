@@ -2,7 +2,7 @@
 
     session_start();
 
-    $bdd = new PDO("mysql:host=localhost;dbname=moduleconnexion;charset=utf8", "root", "SuperP3scado");
+    $bdd = new PDO("mysql:host=localhost;dbname=moduleconnexion;charset=utf8", "root", "");
     $message = "";
 
     function testPassword($pass){
@@ -50,7 +50,7 @@
             $user = $req->fetch();
 
             if($user) {
-                $message = "L'utilisateur existe déja";
+                $message = "Ce nom d'utilisateur est déja utilisé";
             } else {
                 $sql = "INSERT INTO user (login, firstname, lastname, password) VALUES (?,?,?,?)";
                 $req = $bdd->prepare($sql);
