@@ -17,7 +17,7 @@
             $req = $bdd->prepare("UPDATE user 
                 SET login = ?, firstname = ?, lastname = ?, password = ?
                 WHERE id = ?");
-            $req->execute([$username, $firstname, $lastname, $_SESSION["id"]]);
+            $req->execute([$username, $firstname, $lastname, $password, $_SESSION["id"]]);
 
             $_SESSION["login"] = $username;
             $_SESSION["firstname"] = $firstname;
