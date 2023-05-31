@@ -29,7 +29,7 @@
 
         $username = $_POST["login"];
         $firstname = $_POST["firstname"];
-        $nom = $_POST["nom"];
+        $lastname = $_POST["lastname"];
         $password = $_POST["password"];
 
         $passtest = testPassword( $password );
@@ -54,7 +54,7 @@
             } else {
                 $sql = "INSERT INTO user (login, firstname, lastname, password) VALUES (?,?,?,?)";
                 $req = $bdd->prepare($sql);
-                $req->execute( [$username, $firstname, $nom, hash("sha256", $password)] );
+                $req->execute( [$username, $firstname, $lastname, hash("sha256", $password)] );
                 header("location: connexion.php");
             }
         }
@@ -107,7 +107,7 @@
                 ?>
                 <input type="text" name="login" placeholder="Login" required>
                 <input type="text" name="firstname" placeholder="firstname" required>
-                <input type="text" name="nom" placeholder="Nom" required>
+                <input type="text" name="lastname" placeholder="Nom" required>
                 <input type="password" name="password" placeholder="Mot de passe" required>
                 <input type="password" name="confirm-pass" placeholder="Confirmer mot de passe" required>
                 <input type="submit" name="submit" value="Inscription">

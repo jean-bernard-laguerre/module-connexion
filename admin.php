@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-    $bdd = new PDO("mysql:host=localhost;dbname=moduleconnexion;charset=utf8", "root", "");
+    $bdd = new PDO("mysql:host=localhost;dbname=moduleconnexion;charset=utf8", "root", "SuperP3scado");
 
     $sql = "SELECT login, firstname, lastname FROM user";
     $req = $bdd->prepare($sql);
